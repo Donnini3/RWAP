@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keep It Reet – Join Waiting List</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000000;
+    --dark: #0a0a0a;
+    --card: #111111;
+    --border: #222222;
+    --magenta: #FF006E;
+    --cyan: #00F0FF;
+    --magenta-glow: rgba(255,0,110,0.2);
+    --cyan-glow: rgba(0,240,255,0.2);
+    --white: #ffffff;
+    --muted: #888888;
+    --light: #cccccc;
+    --green: #00ff88;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* DIAGONAL STRIPES */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 80px,
+        rgba(255,0,110,0.02) 80px,
+        rgba(255,0,110,0.02) 82px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* GLOW EFFECTS */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -20%;
+    right: -10%;
+    width: 40%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(255,0,110,0.15) 0%, transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    animation: float 15s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-20px, -20px) scale(1.1); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    width: 100%;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    animation: slideDown 0.6s ease;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .logo {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--magenta), var(--cyan));
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: white;
+    letter-spacing: 3px;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 8px 30px var(--magenta-glow);
+  }
+
+  .title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3rem;
+    letter-spacing: 4px;
+    background: linear-gradient(90deg, var(--magenta), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .subtitle {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .form-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: fadeInUp 0.6s ease 0.2s both;
+    position: relative;
+    overflow: hidden;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--magenta), var(--cyan));
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-grid.two-col {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .req {
+    color: var(--magenta);
+    margin-left: 2px;
+  }
+
+  input, select {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px; /* Prevents iOS zoom */
+    padding: 14px 18px;
+    transition: all 0.2s;
+    outline: none;
+    width: 100%;
+    min-height: 52px; /* Larger touch target */
+  }
+
+  input:focus, select:focus {
+    border-color: var(--magenta);
+    box-shadow: 0 0 0 4px var(--magenta-glow);
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FF006E' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    padding-right: 50px;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+
+  select option {
+    background: var(--dark);
+    color: var(--white);
+  }
+
+  .btn-submit {
+    width: 100%;
+    background: linear-gradient(90deg, var(--magenta), var(--cyan));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 20px 32px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    box-shadow: 0 8px 30px var(--magenta-glow);
+    min-height: 64px; /* Large touch target */
+  }
+
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px var(--magenta-glow);
+  }
+
+  .btn-submit:hover::before {
+    left: 100%;
+  }
+
+  .btn-submit:active {
+    transform: translateY(0);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .info-text {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .toast {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background: var(--card);
+    border: 2px solid var(--green);
+    border-radius: 12px;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 999;
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    min-width: 300px;
+  }
+
+  .toast.show {
+    transform: translateX(0);
+  }
+
+  .toast-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .toast-text {
+    font-size: 0.9rem;
+  }
+
+  .toast-title {
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 3px;
+    font-size: 1rem;
+  }
+
+  .toast-sub {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0;
+    }
+    .form-card {
+      padding: 2rem 1.5rem;
+    }
+    .title {
+      font-size: 2.2rem;
+    }
+    .form-grid.two-col {
+      grid-template-columns: 1fr;
+    }
+    .toast {
+      right: 1rem;
+      left: 1rem;
+      min-width: auto;
+    }
+  }
+
+  .success-card {
+    display: none;
+    text-align: center;
+    animation: fadeInUp 0.6s ease;
+  }
+
+  .success-card.show {
+    display: block;
+  }
+
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--green), var(--cyan));
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0,255,136,0.3);
+  }
+
+  .success-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.2rem;
+    letter-spacing: 3px;
+    color: var(--white);
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+  }
+
+  .success-sub {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .btn-back {
+    background: transparent;
+    color: var(--cyan);
+    border: 2px solid var(--cyan);
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-back:hover {
+    background: var(--cyan-glow);
+    box-shadow: 0 0 20px var(--cyan-glow);
+  }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon">✓</div>
+  <div class="toast-text">
+    <div class="toast-title" id="toastTitle">Success!</div>
+    <div class="toast-sub" id="toastSub">You're on the list.</div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">KIR</div>
+    <div class="title">Keep It Reet</div>
+    <div class="subtitle">Ride with a Pro — Join Waiting List</div>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="form-card" id="formCard">
+    <div class="section-title">🏁 Your Details</div>
+
+    <form id="waitlistForm">
+      <div class="form-grid two-col">
+        <div class="form-group">
+          <label>First Name <span class="req">*</span></label>
+          <input type="text" id="firstName" placeholder="First name" required autocomplete="given-name">
+        </div>
+        <div class="form-group">
+          <label>Last Name <span class="req">*</span></label>
+          <input type="text" id="lastName" placeholder="Last name" required autocomplete="family-name">
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Phone Number <span class="req">*</span></label>
+          <input type="tel" id="phone" placeholder="0400 000 000" required autocomplete="tel">
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label>Age Group <span class="req">*</span></label>
+          <select id="ageGroup" required>
+            <option value="">— Select your age group —</option>
+            <option value="Under 18">Under 18 (guardian required)</option>
+            <option value="18-25">18 – 25</option>
+            <option value="26-35">26 – 35</option>
+            <option value="36-45">36 – 45</option>
+            <option value="46+">46+</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit">Join Waiting List</button>
+
+      <div class="info-text">
+        By joining, you'll be added to today's ride queue. Our staff will contact you when it's your turn. Physical waiver will be completed before your ride.
+      </div>
+    </form>
+  </div>
+
+  <!-- SUCCESS CARD -->
+  <div class="form-card success-card" id="successCard">
+    <div class="success-icon">✓</div>
+    <div class="success-title">You're on the List!</div>
+    <div class="success-sub">
+      Thanks for joining! You're now in the queue for a ride with a pro. Our staff will contact you at <strong id="confirmPhone"></strong> when it's your turn.
+    </div>
+    <button class="btn-back" onclick="resetForm()">Add Another Person</button>
+  </div>
+
+</div>
+
+<script>
+// Load existing state
+function loadState() {
+  try {
+    const saved = localStorage.getItem('kirProRides');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch(e) {}
+  return { waitlist: [], submissions: [], drivers: [], events: [] };
+}
+
+function saveState(state) {
+  try {
+    localStorage.setItem('kirProRides', JSON.stringify(state));
+  } catch(e) {
+    console.error('Could not save to localStorage:', e);
+  }
+}
+
+// Form submission
+document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const ageGroup = document.getElementById('ageGroup').value;
+
+  if (!firstName || !lastName || !phone || !ageGroup) {
+    showToast('Missing Info', 'Please fill in all required fields.', true);
+    return;
+  }
+
+  // Create customer entry
+  const customer = {
+    id: Date.now(),
+    timestamp: new Date().toISOString(),
+    firstName: firstName,
+    lastName: lastName,
+    phone: phone,
+    email: email,
+    ageGroup: ageGroup,
+    status: 'waiting'
+  };
+
+  // Load state, add customer, save
+  const state = loadState();
+  state.waitlist = state.waitlist || [];
+  state.waitlist.push(customer);
+  saveState(state);
+
+  // Show success
+  document.getElementById('formCard').style.display = 'none';
+  document.getElementById('successCard').classList.add('show');
+  document.getElementById('confirmPhone').textContent = phone;
+
+  showToast('Added to List!', 'You\'re in the queue.');
+});
+
+function resetForm() {
+  document.getElementById('waitlistForm').reset();
+  document.getElementById('successCard').classList.remove('show');
+  document.getElementById('formCard').style.display = 'block';
+}
+
+function showToast(title, sub, isError = false) {
+  const toast = document.getElementById('toast');
+  const icon = toast.querySelector('.toast-icon');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastSub').textContent = sub;
+  
+  if (isError) {
+    toast.style.borderColor = 'var(--magenta)';
+    icon.style.background = 'var(--magenta)';
+    icon.textContent = '!';
+  } else {
+    toast.style.borderColor = 'var(--green)';
+    icon.style.background = 'var(--green)';
+    icon.textContent = '✓';
+  }
+  
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
